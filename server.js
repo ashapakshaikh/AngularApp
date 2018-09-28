@@ -74,7 +74,7 @@ app.post('/register',(req,res) => {
     res.status(200).send({token})
      
 })
-mongoose.connect('mongodb://test:t123456@ds113873.mlab.com:13873/asshpak', { useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://username:password@ds113873.mlab.com:13873/asshpak', { useNewUrlParser: true }, (err) => {
 	console.log('error',err);
 }
 
