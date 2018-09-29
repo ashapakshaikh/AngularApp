@@ -14,7 +14,9 @@ import { ActivatedRoute } from '@angular/router'
 	          </mat-card-title>
 	       </mat-card-header>
 	      <mat-card-content> 
-	         <mat-list-item>Name: Tim  </mat-list-item>
+	         <mat-list-item>Name: {{profile?.name}}  </mat-list-item><br>
+	         <mat-list-item>Email: {{profile?.email}}  </mat-list-item><br>
+	         <mat-list-item>Desciption: {{profile?.description}}  </mat-list-item><br>
           </mat-card-content> 
        </mat-card>
 	 `
@@ -22,12 +24,14 @@ import { ActivatedRoute } from '@angular/router'
 
 export class ProfileComponent {
           
-          constructor( private apiService: ApiService ) { } 
+          constructor( private apiService: ApiService,private route:ActivatedRoute ) { } 
+
+        profile
 
           ngOnInit(){
-               var id =
-               this.apiService.getProfile(id)
-
+               var id = this.route.snapshot.params.id
+               
+               this.apiService.getProfile(id).subscribe(data => this.profile = data.json())
           }     
 	
 }
