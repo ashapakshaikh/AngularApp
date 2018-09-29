@@ -14,7 +14,7 @@ mongoose.Promise = Promise
 app.use(cors())
 app.use(bodyParser.json())
 
-app.get('/posts', async (req,res) => {
+app.get('/posts', ay (req,res) => {
   var author = '5bae43bffcd88811ad90a287'
 	var posts = await Post.find({author})
   res.send(posts)
@@ -61,7 +61,7 @@ app.get('/profile/:id', async(req,res) => {
 app.use('/auth', auth)
 
      
-mongoose.connect('mongodb://test:t123456@ds113873.mlab.com:13873/asshpak', {useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://user:password@ds113873.mlab.com:13873/asshpak', {useNewUrlParser: true }, (err) => {
   console.log('error',err);
 });
 
