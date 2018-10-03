@@ -6,6 +6,8 @@ var app = express()
 var User = require('./models/User.js')
 var auth = require('./auth.js')
 var Post = require('./models/Post.js')
+var jwt = require('jwt-simple')
+
 
 mongoose.Promise = Promise
 
@@ -14,15 +16,34 @@ mongoose.Promise = Promise
 app.use(cors())
 app.use(bodyParser.json())
 
-app.get('/posts', ay (req,res) => {
-  var author = '5bae43bffcd88811ad90a287'
+function checkAuthenticated(req, res, next ) {
+  
+  if(!req.header('authorization'))
+    return res.status(401).send({message:'Unauthorized. Missing Auth Header'})
+
+      var token = req.header('authorization').split(' ')[1]
+      
+      var payload = jwt.decode(token, '123')
+
+      if(!payload)
+        return res.status(401).send({message: 'Unauthorized. Auth Header Invalid'})
+         
+         req.userId = payload.sub
+
+         next()
+}
+
+
+app.get('/posts/:id', async (req,res) => {
+  var author = req.params.id
 	var posts = await Post.find({author})
   res.send(posts)
 })
 
 app.post('/post',(req,res) => {
      var postData = req.body
-      postData.author = '5bae43bffcd88811ad90a287'
+
+      postData.author = req.userId
            
            var post = new Post(postData)
         
@@ -37,8 +58,9 @@ app.post('/post',(req,res) => {
 
 })
 
-app.get('/users', async(req,res) => {
+app.get('/users',auth.checkAuthenticated, async(req,res) => {
    try{
+    console.log(req.userId)
     var users = await User.find({}, '-pwd -__v')
     res.send(users)
    }catch (error) {
@@ -58,10 +80,10 @@ app.get('/profile/:id', async(req,res) => {
     }
   })
   
-app.use('/auth', auth)
 
+app.use('/auth', auth.router)
      
-mongoose.connect('mongodb://user:password@ds113873.mlab.com:13873/asshpak', {useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://test:t123456@ds113873.mlab.com:13873/asshpak', {useNewUrlParser: true }, (err) => {
   console.log('error',err);
 });
 

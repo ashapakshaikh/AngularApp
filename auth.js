@@ -9,10 +9,11 @@ router.post ('/register', (req,res) => {
 
      var user = new User(userData)
 
-      user.save((err, result) =>{
+      user.save((err, newUser) =>{
           if (err)
-          	console.log('saving user error')
-             res.sendStatus(200)
+          	return res.status(500).send({ message:'Error saving user'})
+          createSendToken(res, newUser)
+         
       })
     })
 
@@ -31,13 +32,41 @@ router.post ('/register', (req,res) => {
 
            return res.status(401).send({message:'Email or Password invalid'})
            
-           var payload = {}
-    
-           var token = jwt.encode(payload, '123')
-
-            res.status(200).send({token})
+           createSendToken(res, user)
      
      })      
   })
+   
+   function createSendToken(res, user ) {
 
-   module.exports = router
+    var payload = { sub: user._id}
+
+    var token = jwt.encode(payload, '123')
+
+    res.status(200).send({token})
+   }
+
+
+
+   var auth = {
+               router,
+           checkAuthenticated:(req,res,next) => {
+              if(!req.header('authorization'))
+            return res.status(401).send({message:'Unauthorized. missing Auth Header'})
+
+         var token = req.header('authorization').split(' ')[1]
+      
+         var payload = jwt.decode(token, '123')
+
+       if(!payload)
+        
+        return res.status(401).send({message: 'Unauthorized. Auth Header Invalid'})
+         
+         req.userId = payload.sub
+
+         next()
+      }
+   }
+
+
+   module.exports = auth

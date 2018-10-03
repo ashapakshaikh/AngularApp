@@ -10,15 +10,15 @@ import { ApiService } from './api.service';
 	          <mat-card-title>
 	              <h4> New Post</h4>
 	          </mat-card-title>
-           </mat-card-header>
+         </mat-card-header>
 	   <mat-card-content> 
 	       <form>
 	          <mat-form-field style= "width: 80%">
 	              <textarea [(ngModel)]="postMsg" name="description" matInput placeholder="Post Message"></textarea>
-	           </mat-form-field>
+	         </mat-form-field>
                  <br>
 	           <button (click)="post()" mat-raised-button color="primary">Post </button>
-           </form>
+         </form>
        </mat-card-content> 
    </mat-card>
   `
